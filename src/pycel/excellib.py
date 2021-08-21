@@ -272,7 +272,7 @@ def round_(number, num_digits=0):
     # Check if it's a 499 case
     try:
         if split_number[1][2] == '4' and split_number[1][3] == '9' and split_number[1][4] == '9' \
-                and split_number[1][5] == '9' and split_number[1][6] == '9' and split_number[1][7] == '9' \
+                and split_number[1][5] == '9' and split_number[1][6] == '9' and split_number[1][7] == '9'\
                 and split_number[1][8] == '9' and split_number[1][9] == '9':
             print("499 case: ", number)
             number = round(number, 3)
