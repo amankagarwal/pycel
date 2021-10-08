@@ -30,13 +30,34 @@ and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0
 Added
 -----
 
-- Add support for networkx 2.6
-
 Changed
 -------
 
 Fixed
 -----
+
+
+[1.0b29] - 2021-09-13
+=====================
+
+Added
+-----
+
+- Add support for openpyxl >= 3.0.8
+
+
+[1.0b28] - 2021-08-31
+=====================
+
+Added
+-----
+
+- Add support for networkx 2.6
+
+Changed
+-------
+
+- Some minor improvements for Iterative Calculations
 
 
 [1.0b27] - 2021-07-10
@@ -103,7 +124,7 @@ Removed
 
 Fixed
 -----
-* Fix Openpyxl > 3.0.4 (Thanks, ckp95)
+* Fix openpyxl >= 3.0.4 (Thanks, ckp95)
 * Fix HLOOKUP row_index_num validation to use num rows (Thanks, nanaposo)
 * Fix #86, tokenize.TokenError: ('EOF in multi-line statement',
 * Fix #88, Handle calcPR in workbook (Thanks, andreif)
