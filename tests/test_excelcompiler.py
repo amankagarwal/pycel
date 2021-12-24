@@ -1110,3 +1110,25 @@ def test_circular_order_random(fixture_xls_copy):
             output_addrs=addrs,
         )
         assert (failed_cells, addrs) == ({}, addrs)
+
+
+def test_evaluate_after_range_eval_error():
+    wb = Workbook()
+    ws = wb.active
+    ws['A1'], ws['B1'], ws['C1'] = 0, 1, 0
+    ws['A2'] = '=UNKNOWN(A1:C1,0,FALSE,1,TRUE)'
+    ws.formula_attributes['A2'] = {'t': 'array', 'ref': "A2:C2"}
+    ws['A3'] = 'hello'
+    ws['A4'] = '=UNKNOWN(A1:C1,1,FALSE,0,TRUE)'
+    ws.formula_attributes['A4'] = {'t': 'array', 'ref': "A4:C4"}
+    ws['A5'] = '=AND(A2,A4)'
+
+    excel_compiler = ExcelCompiler(excel=wb)
+    with pytest.raises(UnknownFunction):
+        excel_compiler.evaluate('A2')
+    assert excel_compiler.evaluate('A3') == 'hello'
+
+    excel_compiler = ExcelCompiler(excel=wb)
+    with pytest.raises(UnknownFunction):
+        excel_compiler.evaluate('A5')
+    assert excel_compiler.evaluate('A3') == 'hello'
