@@ -715,7 +715,10 @@ class ExcelCompiler:
             self.graph_todos.append(node)
 
         def build_cell(excel_cell):
-            a_cell = self.Cell(excel_cell.address, value=excel_cell.values,
+            curr_value = excel_cell.values
+            if isinstance(curr_value, float) and "ROUND" not in excel_cell.formula.upper():
+                curr_value = round(curr_value, 3)
+            a_cell = self.Cell(excel_cell.address, value=curr_value,
                                formula=excel_cell.formula, excel=self.excel)
             self.cell_map[str(excel_cell.address)] = a_cell
             return [a_cell]
