@@ -32,6 +32,7 @@ from pycel.excelutil import (
     list_like,
 )
 from pycel.excelwrapper import ExcelOpxWrapper, ExcelOpxWrapperNoData
+from decimal import Decimal
 
 REF_START = '=_REF_("'
 REF_END = '")'
@@ -716,8 +717,8 @@ class ExcelCompiler:
 
         def build_cell(excel_cell):
             curr_value = excel_cell.values
-            if isinstance(curr_value, float) and "ROUND" not in excel_cell.formula.upper():
-                curr_value = round(curr_value, 3)
+            if isinstance(curr_value, float):
+                curr_value = Decimal(curr_value)
             a_cell = self.Cell(excel_cell.address, value=curr_value,
                                formula=excel_cell.formula, excel=self.excel)
             self.cell_map[str(excel_cell.address)] = a_cell
