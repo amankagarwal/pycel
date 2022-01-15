@@ -718,7 +718,8 @@ class ExcelCompiler:
         def build_cell(excel_cell):
             curr_value = excel_cell.values
             if isinstance(curr_value, float):
-                curr_value = Decimal(curr_value)
+                print(curr_value)
+                curr_value = str(curr_value)
             a_cell = self.Cell(excel_cell.address, value=curr_value,
                                formula=excel_cell.formula, excel=self.excel)
             self.cell_map[str(excel_cell.address)] = a_cell
