@@ -54,7 +54,7 @@ def _numerics(*args, keep_bools=False, to_number=lambda x: x):
         args = (
             to_number(a) for a in args if keep_bools or not isinstance(a, bool)
         )
-        return tuple(x for x in args if isinstance(x, (int, float)))
+        return tuple(Decimal(str(x)) for x in args if isinstance(x, (int, float, Decimal)))
 
 
 @excel_math_func
@@ -335,6 +335,16 @@ def sum_(*args):
 
     # if no non numeric cells, return zero (is what excel does)
     return sum(data)
+
+
+@excel_math_func
+def product(*args):
+    # Excel reference: https://support.microsoft.com/en-us/office/
+    #   product-function-8e6b5b24-90ee-4650-aeec-80982a0512ce
+    data = _numerics(*args)
+    if isinstance(data, str):
+        return data
+    return prod(args)
 
 
 def sumif(rng, criteria, sum_range=None):
