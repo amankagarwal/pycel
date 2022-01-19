@@ -272,28 +272,16 @@ def pv(rate, nper, pmt, fv=0, type_=0):
 
 
 @excel_math_func
-def round_(number, num_digits=0):
-    # Excel reference: https://support.office.com/en-us/article/
+def round_(number: Decimal, num_digits=0):
+    # Excel reference: https://support.microsoft.com/en-us/office/
     #   ROUND-function-c018c5d8-40fb-4053-90b1-b3e7f61a213c
 
-    string_number = str(number)
-    split_number = string_number.split('.')
-    # Check if it's a 499 case
-    try:
-        if split_number[1][2] == '4' and split_number[1][3] == '9' and split_number[1][4] == '9' \
-                and split_number[1][5] == '9' and split_number[1][6] == '9' and split_number[1][7] == '9'\
-                and split_number[1][8] == '9' and split_number[1][9] == '9':
-            print("499 case: ", number)
-            number = round(number, 3)
-            print("Now rounded: ", number)
-    except:
-        pass
     num_digits = int(num_digits)
     if num_digits >= 0:  # round to the right side of the point
-        return float(Decimal(repr(number)).quantize(
+        return number.quantize(
             Decimal(repr(pow(10, -num_digits))),
             rounding=ROUND_HALF_UP
-        ))
+        )
         # see https://docs.python.org/2/library/functions.html#round
         # and https://gist.github.com/ejamesc/cedc886c5f36e2d075c5
 

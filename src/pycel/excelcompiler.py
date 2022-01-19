@@ -16,10 +16,16 @@ import math
 import os
 import pickle
 from numbers import Number
+from decimal import Decimal
 
 import networkx as nx
 import numpy as np
 from ruamel.yaml import YAML
+
+def repr_decimal(representer, data: Decimal):
+    return representer.represent_scalar(u'!decimal', data.__repr__())
+ymlo = YAML()
+ymlo.representer.add_representer(Decimal, repr_decimal)
 
 from pycel.excelformula import ExcelFormula
 from pycel.excelutil import (
@@ -126,7 +132,7 @@ class ExcelCompiler:
         to_removes = '_eval excel log graph_todos range_todos ' \
                      'conditional_formats'.split()
         for to_remove in to_removes:
-            if to_remove in state:    # pragma: no branch
+            if to_remove in state:  # pragma: no branch
                 state[to_remove] = None
         return state
 
@@ -213,7 +219,6 @@ class ExcelCompiler:
 
         if not is_json:
             with open(filename, 'w') as f:
-                ymlo = YAML()
                 ymlo.width = 120
                 ymlo.dump(extra_data, f)
         else:
@@ -239,7 +244,7 @@ class ExcelCompiler:
                 filename += '.json'
 
         with open(filename, 'r') as f:
-            data = YAML().load(f)
+            data = ymlo.load(f)
 
         excel = _CompiledImporter(filename, data)
         excel_compiler = cls(excel=excel, cycles=data.pop('cycles', False))
@@ -303,9 +308,9 @@ class ExcelCompiler:
         filename = filename or self.filename
         extension = self._filename_has_extension(filename)
         if extension:
-            file_types = (extension, )
+            file_types = (extension,)
         elif isinstance(file_types, str):
-            file_types = (file_types, )
+            file_types = (file_types,)
 
         unknown_types = tuple(ft for ft in file_types
                               if ft not in self.save_file_extensions)
@@ -440,7 +445,7 @@ class ExcelCompiler:
 
         if set_as_range and list_like(value) and not (
                 value and list_like(value[0])):
-            value = (value, )
+            value = (value,)
 
         cell_or_range = self.cell_map[address]
 
@@ -715,7 +720,10 @@ class ExcelCompiler:
             self.graph_todos.append(node)
 
         def build_cell(excel_cell):
-            a_cell = self.Cell(excel_cell.address, value=excel_cell.values,
+            curr_value = excel_cell.values
+            if isinstance(curr_value, float):
+                curr_value = Decimal(str(curr_value))
+            a_cell = self.Cell(excel_cell.address, value=curr_value,
                                formula=excel_cell.formula, excel=self.excel)
             self.cell_map[str(excel_cell.address)] = a_cell
             return [a_cell]
@@ -1009,7 +1017,6 @@ class ExcelCompiler:
 
 
 class _CellBase:
-
     value = None
 
     def __init__(self, address=None, formula='', excel=None):
@@ -1184,6 +1191,7 @@ class _CycleCell(_Cell):
 
 class _CompiledImporter:
     """Emulate the excel_wrapper for serialized files"""
+
     def __init__(self, filename, file_data):
         # take the workbook filename from the deserialized data if available
         # otherwise the passed in filename
