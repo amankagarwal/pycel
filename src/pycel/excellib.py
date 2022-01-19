@@ -275,7 +275,8 @@ def pv(rate, nper, pmt, fv=0, type_=0):
 def round_(number: Decimal, num_digits=0):
     # Excel reference: https://support.microsoft.com/en-us/office/
     #   ROUND-function-c018c5d8-40fb-4053-90b1-b3e7f61a213c
-
+    if not isinstance(number, Decimal):
+        number = Decimal(repr(number))
     num_digits = int(num_digits)
     if num_digits >= 0:  # round to the right side of the point
         return number.quantize(
