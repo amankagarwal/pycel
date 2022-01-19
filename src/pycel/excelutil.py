@@ -12,6 +12,7 @@ import itertools as it
 import operator
 import re
 import threading
+from decimal import Decimal
 
 import numpy as np
 from openpyxl.formula.tokenizer import Tokenizer
@@ -941,7 +942,7 @@ def uniqueify(seq):
 
 def is_number(value):
     try:
-        float(value)
+        Decimal(str(value))
         return True
     except (ValueError, TypeError):
         return False
@@ -971,7 +972,7 @@ def coerce_to_number(value, convert_all=False):
         pass
 
     try:
-        return float(value)
+        return Decimal(str(value))
     except (ValueError, TypeError):
         return value
 
