@@ -32,6 +32,7 @@ from pycel.excelutil import (
     list_like,
 )
 from pycel.excelwrapper import ExcelOpxWrapper, ExcelOpxWrapperNoData
+from decimal import Decimal
 
 REF_START = '=_REF_("'
 REF_END = '")'
@@ -189,7 +190,7 @@ class ExcelCompiler:
             if a_cell.formula and a_cell.formula.python_code:
                 return '=' + a_cell.formula.python_code
             elif isinstance(a_cell.value, np.float64):
-                return float(a_cell.value)
+                return Decimal(a_cell.value)
             else:
                 return a_cell.value
 
